@@ -1,0 +1,607 @@
+/* Theme tokens live here first. */
+:root {
+  color-scheme: light;
+  font-family: "Source Sans 3", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #1e1814;
+  background:
+    radial-gradient(circle at top left, rgba(232, 146, 84, 0.34), transparent 30%),
+    radial-gradient(circle at right, rgba(67, 40, 24, 0.12), transparent 28%),
+    linear-gradient(180deg, #fff8f0 0%, #f3ece5 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --panel: rgba(255, 250, 245, 0.84);
+  --panel-border: rgba(74, 47, 32, 0.12);
+  --accent: #c65d2e;
+  --accent-dark: #8d3f18;
+  --teal: #6f4a34;
+  --text-muted: #6e5a4e;
+  --shadow: 0 24px 60px rgba(61, 36, 22, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.page-shell {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 24px 72px;
+  transition:
+    color 220ms ease,
+    background 220ms ease;
+}
+
+/* These swap when the main tab changes. */
+.theme-budgeting {
+  --panel: rgba(255, 250, 245, 0.84);
+  --panel-border: rgba(74, 47, 32, 0.12);
+  --accent: #c65d2e;
+  --accent-dark: #8d3f18;
+  --teal: #6f4a34;
+  --text-muted: #6e5a4e;
+  --shadow: 0 24px 60px rgba(61, 36, 22, 0.1);
+}
+
+.theme-search {
+  --panel: rgba(244, 250, 246, 0.86);
+  --panel-border: rgba(28, 74, 47, 0.16);
+  --accent: #4c9b63;
+  --accent-dark: #1f5a3a;
+  --teal: #2b6a49;
+  --text-muted: #546c5d;
+  --shadow: 0 24px 60px rgba(18, 67, 43, 0.16);
+}
+
+/* Search gets a subtle green wash behind everything. */
+.theme-search::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at top left, rgba(92, 166, 117, 0.18), transparent 30%),
+    radial-gradient(circle at right, rgba(18, 74, 46, 0.16), transparent 28%);
+  z-index: -1;
+}
+
+/* Top-level tab switcher. */
+.workspace-tabs {
+  display: inline-flex;
+  gap: 10px;
+  padding: 8px;
+  margin-bottom: 24px;
+  background: rgba(255, 248, 241, 0.86);
+  border: 1px solid rgba(74, 47, 32, 0.12);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+.workspace-tab {
+  border: 0;
+  border-radius: 16px;
+  padding: 12px 18px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.workspace-tab.active {
+  background: linear-gradient(135deg, var(--accent), #da8a48);
+  color: white;
+}
+
+.theme-search .workspace-tab.active {
+  background: linear-gradient(135deg, var(--accent), #79b38b);
+}
+
+/* Hero area stays the visual anchor. */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 28px;
+}
+
+/* Shared glass card feel. */
+.hero-copy,
+.hero-stat,
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.hero-copy {
+  padding: 36px;
+}
+
+.hero-copy h1,
+.section-heading h2,
+.listing-topline h3 {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.hero-copy h1 {
+  margin: 0 0 12px;
+  font-size: clamp(2.4rem, 4vw, 4.8rem);
+  line-height: 0.96;
+  max-width: 10ch;
+}
+
+.hero-text,
+.section-heading p,
+.empty-state,
+.listing-content p {
+  color: var(--text-muted);
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent-dark);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 28px;
+  background:
+    linear-gradient(145deg, rgba(86, 48, 25, 0.98), rgba(45, 26, 14, 0.96)),
+    var(--panel);
+  color: #f6f1e8;
+}
+
+.theme-search .hero-stat {
+  background:
+    linear-gradient(145deg, rgba(25, 86, 53, 0.98), rgba(12, 48, 29, 0.97)),
+    var(--panel);
+}
+
+.hero-stat span,
+.hero-stat small {
+  opacity: 0.84;
+}
+
+.hero-stat strong {
+  margin: 10px 0 6px;
+  font-size: 1.9rem;
+  line-height: 1.05;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 460px) minmax(0, 1fr);
+  gap: 24px;
+}
+
+.panel {
+  padding: 28px;
+}
+
+.results-column {
+  display: grid;
+  gap: 24px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.section-heading p {
+  margin: 6px 0 0;
+}
+
+.form-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.input-section {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 247, 239, 0.88), rgba(252, 242, 233, 0.7));
+  border: 1px solid rgba(74, 47, 32, 0.1);
+}
+
+/* Small reusable layout helpers. */
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+.two-up {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+label,
+.label-title {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+
+/* Controls share the same warm surface treatment. */
+input,
+select {
+  width: 100%;
+  border: 1px solid rgba(74, 47, 32, 0.16);
+  border-radius: 14px;
+  padding: 13px 14px;
+  background: rgba(255, 252, 249, 0.96);
+  color: #33231a;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid rgba(198, 93, 46, 0.22);
+  border-color: var(--accent);
+}
+
+/* Budget and search tabs reuse the same pill style. */
+.toggle-row {
+  display: inline-flex;
+  gap: 10px;
+  padding: 6px;
+  background: rgba(141, 63, 24, 0.08);
+  border-radius: 18px;
+  flex-wrap: wrap;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.toggle {
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 16px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.toggle.active {
+  background: rgba(255, 251, 248, 0.96);
+  color: var(--accent-dark);
+  box-shadow: 0 10px 24px rgba(61, 36, 22, 0.12);
+}
+
+.amenity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* Small cards for amenity choices. */
+.checkbox-card {
+  grid-template-columns: 20px 1fr;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid rgba(74, 47, 32, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 249, 243, 0.86);
+}
+
+.checkbox-card input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.submit-button {
+  border: 0;
+  border-radius: 18px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--accent), #da8a48);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.theme-search .submit-button {
+  background: linear-gradient(135deg, var(--accent), #79b38b);
+}
+
+.secondary-button,
+.ghost-button {
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondary-button {
+  border: 1px solid rgba(74, 47, 32, 0.16);
+  padding: 12px 16px;
+  background: rgba(255, 248, 241, 0.9);
+  color: var(--teal);
+}
+
+.ghost-button {
+  border: 0;
+  padding: 8px 12px;
+  background: rgba(198, 93, 46, 0.12);
+  color: var(--accent-dark);
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.helper-text {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* Summary cards should stay easy to scan. */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.single-column {
+  grid-template-columns: 1fr;
+}
+
+.summary-grid div {
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 250, 246, 0.92), rgba(248, 239, 232, 0.76));
+  border: 1px solid rgba(74, 47, 32, 0.1);
+}
+
+.summary-grid span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.summary-grid strong {
+  font-size: 1.2rem;
+}
+
+/* Household sections reuse this stack spacing. */
+.contributor-section,
+.contributor-stack,
+.household-results,
+.fairness-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.section-heading.compact p {
+  margin-top: 4px;
+}
+
+.contributor-card,
+.split-card {
+  border: 1px solid rgba(74, 47, 32, 0.12);
+  border-radius: 20px;
+  padding: 18px;
+  background: rgba(255, 249, 243, 0.86);
+}
+
+.contributor-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.split-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.split-card h3,
+.split-card p,
+.split-card strong,
+.split-card span {
+  display: block;
+}
+
+.split-card h3 {
+  margin: 0 0 8px;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.split-card p,
+.split-card span {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.split-card strong {
+  margin: 10px 0 6px;
+  color: var(--accent-dark);
+  font-size: 1.3rem;
+}
+
+.fair-card {
+  background: linear-gradient(180deg, rgba(141, 63, 24, 0.11), rgba(255, 248, 242, 0.88));
+}
+
+.theme-search .fair-card {
+  background: linear-gradient(180deg, rgba(55, 132, 81, 0.18), rgba(245, 251, 247, 0.92));
+}
+
+.summary-card {
+  background: linear-gradient(180deg, rgba(86, 48, 25, 0.08), rgba(255, 246, 239, 0.88));
+}
+
+.theme-search .summary-card {
+  background: linear-gradient(180deg, rgba(22, 88, 53, 0.14), rgba(243, 249, 245, 0.9));
+}
+
+.theme-search .input-section {
+  background: linear-gradient(180deg, rgba(242, 250, 245, 0.92), rgba(233, 245, 238, 0.76));
+  border: 1px solid rgba(28, 74, 47, 0.12);
+}
+
+.theme-search .toggle-row {
+  background: rgba(31, 90, 58, 0.1);
+}
+
+.theme-search .toggle.active {
+  color: var(--accent-dark);
+  box-shadow: 0 10px 24px rgba(18, 67, 43, 0.14);
+}
+
+.theme-search .summary-grid div,
+.theme-search .contributor-card,
+.theme-search .split-card,
+.theme-search .listing-card,
+.theme-search .workspace-tabs {
+  border-color: rgba(28, 74, 47, 0.14);
+}
+
+.theme-search .summary-grid div {
+  background: linear-gradient(180deg, rgba(245, 251, 247, 0.94), rgba(232, 244, 236, 0.8));
+}
+
+.theme-search .contributor-card,
+.theme-search .split-card,
+.theme-search .listing-card {
+  background: rgba(245, 251, 247, 0.88);
+}
+
+.theme-search .tag {
+  background: rgba(31, 90, 58, 0.14);
+  color: #24573a;
+}
+
+/* Listing cards stay simple and dense. */
+.listing-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.listing-card {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 16px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(255, 249, 244, 0.86);
+  border: 1px solid rgba(74, 47, 32, 0.12);
+}
+
+.listing-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  object-fit: cover;
+}
+
+.listing-content {
+  padding: 18px 18px 18px 0;
+}
+
+.listing-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+}
+
+.listing-topline h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.listing-topline span {
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.tag {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(141, 63, 24, 0.12);
+  color: var(--teal);
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.error-text {
+  margin: 0;
+  color: #b42318;
+}
+
+.empty-state {
+  margin: 0;
+}
+
+@media (max-width: 960px) {
+  .hero,
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy h1 {
+    max-width: 12ch;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    padding: 24px 16px 48px;
+  }
+
+  .panel,
+  .hero-copy,
+  .hero-stat {
+    border-radius: 22px;
+    padding: 22px;
+  }
+
+  .two-up,
+  .amenity-grid,
+  .summary-grid,
+  .split-grid,
+  .listing-card {
+    grid-template-columns: 1fr;
+  }
+
+  .listing-content {
+    padding: 0 18px 18px;
+  }
+}
