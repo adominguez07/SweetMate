@@ -1,15 +1,11 @@
 // Main app screen.
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import {
-  Amenity,
-  ApartmentSearchRequest,
   BudgetRequest,
   BudgetResponse,
-  Listing,
   calculateBudget,
-  searchApartments,
 } from "./api";
-import { AMENITY_OPTIONS, STATES } from "./constants";
+import { STATES } from "./constants";
 
 type PlannerMode = "solo" | "household";
 type WorkspaceTab = "budgeting" | "search";
@@ -92,34 +88,15 @@ function App() {
   const [hourlyRate, setHourlyRate] = useState("28");
   const [hoursPerWeek, setHoursPerWeek] = useState("40");
   const [state, setState] = useState("TX");
-  const [city, setCity] = useState("");
   const [rentRatio, setRentRatio] = useState("0.30");
-  const [bedrooms, setBedrooms] = useState("1");
-  const [bathrooms, setBathrooms] = useState("1");
-  const [selectedAmenities, setSelectedAmenities] = useState<Amenity[]>([]);
   const [budget, setBudget] = useState<BudgetResponse | null>(null);
   const [householdBudget, setHouseholdBudget] = useState<HouseholdBudgetResult | null>(null);
-  const [listings, setListings] = useState<Listing[]>([]);
   const [loadingBudget, setLoadingBudget] = useState(false);
-  const [loadingListings, setLoadingListings] = useState(false);
   const [error, setError] = useState("");
   const [contributors, setContributors] = useState<ContributorForm[]>([
     createContributor(1, "Person 1", "50"),
     createContributor(2, "Person 2", "50"),
   ]);
-
-  // Search uses whichever budget is active.
-  const activeBudgetRent = useMemo(() => {
-    if (plannerMode === "household") return householdBudget?.recommendedMaxRent ?? null;
-    return budget?.recommended_max_rent ?? null;
-  }, [plannerMode, householdBudget, budget]);
-
-  const toggleAmenity = (amenity: Amenity) => {
-    // Simple include-or-remove toggle.
-    setSelectedAmenities((current) =>
-      current.includes(amenity) ? current.filter((item) => item !== amenity) : [...current, amenity],
-    );
-  };
 
   const updateContributor = (id: number, field: keyof ContributorForm, value: string | number) => {
     // Update one household row at a time.
@@ -140,16 +117,6 @@ function App() {
   const removeContributor = (id: number) => {
     setContributors((current) => current.filter((contributor) => contributor.id !== id));
   };
-
-  const getApartmentPayload = (maxMonthlyRent: number): ApartmentSearchRequest => ({
-    // The search tab reads from the current UI filters.
-    max_monthly_rent: maxMonthlyRent,
-    state,
-    city: city.trim() || undefined,
-    min_bedrooms: Number(bedrooms),
-    min_bathrooms: Number(bathrooms),
-    required_amenities: selectedAmenities,
-  });
 
   const buildHouseholdBudget = async (rentRatioValue: number) => {
     // Shares still need to total 100.
@@ -217,30 +184,11 @@ function App() {
         setHouseholdBudget(await buildHouseholdBudget(rentRatioValue));
         setBudget(null);
       }
-      setListings([]);
       setActiveTab("search");
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Something went wrong while calculating your budget.");
     } finally {
       setLoadingBudget(false);
-    }
-  };
-
-  const handleApartmentSearch = async () => {
-    // Search only works after a budget exists.
-    if (!activeBudgetRent) {
-      setError("Calculate a budget first so apartment search knows your price range.");
-      return;
-    }
-    setLoadingListings(true);
-    setError("");
-    try {
-      const apartmentResponse = await searchApartments(getApartmentPayload(activeBudgetRent));
-      setListings(apartmentResponse.matches);
-    } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Something went wrong while searching apartments.");
-    } finally {
-      setLoadingListings(false);
     }
   };
 
@@ -436,83 +384,14 @@ function App() {
           </section>
         </main>
       ) : (
-        <main className="layout">
-          <aside className="panel form-panel">
+        <main className="layout layout-centered">
+          <article className="panel">
             <div className="section-heading">
               <h2>Apartment Search</h2>
-              <p>Use your saved budget to search listings that fit the move.</p>
+              <p>Currently Unavailable</p>
             </div>
-            <section className="input-section">
-              <div className="section-heading compact">
-                <h2>Budget Guardrail</h2>
-                <p>The search uses the max rent calculated on the budgeting side.</p>
-              </div>
-              <div className="summary-grid single-column">
-                <div><span>Active budget mode</span><strong>{plannerMode === "solo" ? "Solo" : "Household"}</strong></div>
-                <div><span>Max rent used for search</span><strong>{activeBudgetRent ? currency.format(activeBudgetRent) : "Calculate first"}</strong></div>
-              </div>
-            </section>
-            <section className="input-section">
-              <div className="section-heading compact">
-                <h2>Search Filters</h2>
-                <p>Refine the apartment results without changing the saved budget.</p>
-              </div>
-              <div className="grid two-up">
-                <label>State<select value={state} onChange={(event) => setState(event.target.value)}>{STATES.map((stateOption) => <option key={stateOption} value={stateOption}>{stateOption}</option>)}</select></label>
-                <label>City<input type="text" placeholder="Optional" value={city} onChange={(event) => setCity(event.target.value)} /></label>
-              </div>
-              <div className="grid two-up">
-                <label>Minimum bedrooms<input type="number" min="0" value={bedrooms} onChange={(event) => setBedrooms(event.target.value)} /></label>
-                <label>Minimum bathrooms<input type="number" min="0" step="0.5" value={bathrooms} onChange={(event) => setBathrooms(event.target.value)} /></label>
-              </div>
-              <div>
-                <span className="label-title">Required amenities</span>
-                <div className="amenity-grid">
-                  {AMENITY_OPTIONS.map((option) => (
-                    <label key={option.value} className="checkbox-card">
-                      <input type="checkbox" checked={selectedAmenities.includes(option.value)} onChange={() => toggleAmenity(option.value)} />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </section>
-            <button className="submit-button" type="button" onClick={handleApartmentSearch} disabled={loadingListings}>
-              {loadingListings ? "Searching apartments..." : "Search apartments"}
-            </button>
-            {error ? <p className="error-text">{error}</p> : null}
-          </aside>
-
-          <section className="results-column">
-            <article className="panel listings-panel">
-              <div className="section-heading">
-                <h2>Apartment Results</h2>
-                <p>This tab is dedicated to listings, filtered by the budget ceiling you already calculated.</p>
-              </div>
-              {listings.length > 0 ? (
-                <div className="listing-grid">
-                  {listings.map((listing) => (
-                    <a key={listing.id} className="listing-card" href={listing.listing_url} target="_blank" rel="noreferrer">
-                      <img src={listing.image_url} alt={listing.title} />
-                      <div className="listing-content">
-                        <div className="listing-topline">
-                          <h3>{listing.title}</h3>
-                          <span>{currency.format(listing.monthly_rent)}/mo</span>
-                        </div>
-                        <p>{listing.neighborhood}, {listing.city}, {listing.state}</p>
-                        <p>{listing.bedrooms} bd • {listing.bathrooms} ba</p>
-                        <div className="tag-row">
-                          {listing.amenities.map((amenity) => <span key={amenity} className="tag">{amenity.split("_").join(" ")}</span>)}
-                        </div>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              ) : (
-                <p className="empty-state">No listings yet. Use the Apartment Search button to fetch apartments with your saved budget.</p>
-              )}
-            </article>
-          </section>
+            <p className="empty-state">This feature is coming soon. Finish your budget on the Budgeting tab in the meantime.</p>
+          </article>
         </main>
       )}
     </div>
