@@ -1,5 +1,7 @@
 """Main API entrypoint."""
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -13,10 +15,12 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# Let the local Vite app talk to the API.
+_raw = os.getenv("CORS_ORIGINS", "http://localhost:5173")
+_origins = [o.strip() for o in _raw.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
